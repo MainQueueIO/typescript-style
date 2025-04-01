@@ -1,0 +1,46 @@
+
+name: "[Release] Release"
+on: 
+  workflow_dispatch:
+
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Initialize Git user
+      run: |
+        git config --global user.email "bot@mainqueue.io"
+        git config --global user.name "MainQueue.io Bot"
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+        registry-url: https://registry.npmjs.org/
+
+    - name: Setup Bun.js
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version-file: ".bun-version"
+
+    - name: Install the dependancies
+      run: bun install
+
+    - name: Authenticate with NPM
+      run: |
+        echo "//registry.npmjs.org/:_authToken=${{ secrets.ORG_MQIO_NPM_TOKEN }}" > ~/.npmrc
+    
+    - name: Build dist files with tsc
+      run: bun run build
+    
+    - name: Create Release
+      run: |
+        bun release:ci
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.ORG_MQIO_NPM_TOKEN }}
+        NPM_TOKEN: ${{ secrets.ORG_MQIO_NPM_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

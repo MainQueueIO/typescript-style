@@ -1,0 +1,67 @@
+{
+	"git": {
+		"commitMessage": "chore: release v${version}",
+		"requireBranch": "main"
+	},
+	"github": {
+		"release": true,
+		"releaseName": "v${version}",
+		"autoGenerate": true,
+		"tokenRef": "GITHUB_TOKEN",
+		"comments": {
+			"submit": true,
+			"issue": ":rocket: _This issue has been resolved in version ${version}. See [${releaseName}](${releaseUrl}) for release notes._",
+			"pr": ":rocket: _This pull request is included in version ${version}. See [${releaseName}](${releaseUrl}) for release notes._"
+		}
+	},
+	"npm": {
+		"publish": true,
+		"skipChecks": true,
+		"publishArgs": [
+			"--access=public"
+		]
+	},
+	"plugins": {
+		"@release-it/conventional-changelog": {
+			"infile": "CHANGELOG.md",
+			"header": "# Changelog",
+			"preset": {
+				"name": "conventionalcommits",
+				"types": [
+					{
+						"section": "🚀 New Features",
+						"type": "feat"
+					},
+					{
+						"section": "🐛 Bug Fixes",
+						"type": "fix"
+					},
+					{
+						"section": "📦 Miscellaneous tasks",
+						"type": "chore"
+					},
+					{
+						"section": "📝 Documentation",
+						"type": "docs"
+					},
+					{
+						"section": "💄 Code improvements",
+						"type": "style"
+					},
+					{
+						"section": "♻️ Refactors",
+						"type": "refactor"
+					},
+					{
+						"section": "🏎️ Performance upgrades",
+						"type": "perf"
+					},
+					{
+						"section": "🧪 Tests",
+						"type": "test"
+					}
+				]
+			}
+		}
+	}
+}

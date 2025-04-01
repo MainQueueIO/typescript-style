@@ -1,0 +1,15 @@
+# The code owners will appear as the default reviewers in every PR.
+
+# More information about this file at: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default code owners
+
+* @diegocuehdz
+
+# Only super-priviledge users should be able to edit this file
+
+/.github/workflows/\*\* @MainQueueIO/admins
+
+# Prevent mods to this file (Codeowners)
+
+/.github/CODEOWNERS @MainQueueIO/admins
