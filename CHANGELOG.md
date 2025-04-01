@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.1 (2025-04-01)
+
+### 📦 Miscellaneous tasks
+
+* initial commit ([6a4371a](https://github.com/MainQueueIO/typescript-style/commit/6a4371a14c0759883b156f366a6aa4d515b61810))
+
 ## 0.1.3 (2025-04-01)
 
 ### 🐛 Bug Fixes
