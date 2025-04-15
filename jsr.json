@@ -9,6 +9,15 @@
             ]
         }
     },
+    "publish": {
+        "include": [
+            "./eslint.config.mjs",
+            "./prettier.config.mjs",
+            "./oxlint-base.json",
+            "./index.ts",
+            "README.md"
+        ]
+    },
     "exports": {
         "./eslint": "./eslint.config.mjs",
         "./prettier": "./prettier.config.mjs",
