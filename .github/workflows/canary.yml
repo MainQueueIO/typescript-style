@@ -78,12 +78,11 @@ jobs:
         run: bun run build
 
       - name: Publish to NPM (canary)
-        # TODO: (diegocuehdz) remove line 83 dry-run after release and sure it works
         run: |
-          CMD="npm publish --tag next --access public --dry-run" 
-          #if [[ "${{ inputs.dryRun }}" == "true" ]]; then
-          #  CMD="$CMD --dry-run"
-          #fi
+          CMD="npm publish --tag next --access public" 
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
           echo "Running: $CMD"
           eval "$CMD"
         env:
@@ -117,12 +116,11 @@ jobs:
         run: bun run build
 
       - name: Publish to JSR (canary)
-        # TODO: (diegocuehdz) remove line 122 dry-run after release and sure it works
         run: |
-          CMD="bunx jsr publish  --allow-dirty  --dry-run"
-          #if [[ "${{ inputs.dryRun }}" == "true" ]]; then
-          #  CMD="$CMD --dry-run"
-          #fi
+          CMD="bunx jsr publish  --allow-dirty"
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
           echo "Running: $CMD"
           eval "$CMD"
 
@@ -153,13 +151,12 @@ jobs:
         run: bun run build
 
       - name: Publish to GitHub Packages
-        # TODO: (diegocuehdz) remove line 159 dry-run after release and sure it works
         run: |
           npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
-          CMD="npm publish --registry=https://npm.pkg.github.com/ --tag next --access public --dry-run"
-          #if [[ "${{ inputs.dryRun }}" == "true" ]]; then
-          #  CMD="$CMD --dry-run"
-          #fi
+          CMD="npm publish --registry=https://npm.pkg.github.com/ --tag next --access public"
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
           echo "Running: $CMD"
           eval "$CMD"
         env:
