@@ -1,0 +1,185 @@
+name: "[Release] Publish Canary Version"
+
+on:
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: "Dry Run Mode"
+        type: boolean
+        default: true # TODO: (diegocuehdz) Set to false after release and Im sure it works
+  workflow_call: # This workflow can be called from other workflows, specifically for PR check for upcoming release on merged PR
+    inputs:
+      dryRun:
+        description: "Dry Run Mode for called workflows"
+        type: boolean
+        default: true
+  push:
+    branches: [main]
+
+jobs:
+  check-before-publishing:
+    name: Checks before publishing
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.canary-release-version.outputs.version }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history
+          ref: ${{ github.head_ref || github.ref_name }}  # Properly checkout the PR branch or main branch
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"  
+
+      - name: Install Deps via Bun
+        run: bun install    
+      
+      - name: Run checks before publishing
+        run: bun test
+      
+      - name: Create NPM Canary release
+        id: canary-release-version
+        run: |
+          VERSION=$(bun release:ci:canary)
+          echo "Version from script: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+  publish-to-npm:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    needs: check-before-publishing
+    outputs:
+      status: ${{ job.status }}
+    permissions:
+      contents: read
+      packages: write # for GitHub Packages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+      
+      - name: Update version in package.json
+        run: |
+          bun .github/scripts/bump-version.ts --version=${{ needs.check-before-publishing.outputs.version }} --tag=next --suffix=${{ github.run_number }}
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Authenticate with NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.ORG_MQIO_NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Build dist files with tsc
+        run: bun run build
+
+      - name: Publish to NPM (canary)
+        # TODO: (diegocuehdz) remove line 83 dry-run after release and sure it works
+        run: |
+          CMD="npm publish --tag next --access public --dry-run" 
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
+          echo "Running: $CMD"
+          eval "$CMD"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.ORG_MQIO_NPM_TOKEN }}
+
+  publish-to-jsr:
+    name: Publish to JSR
+    runs-on: ubuntu-latest
+    needs: check-before-publishing
+    outputs:
+      status: ${{ job.status }}
+    permissions:
+      contents: read
+      id-token: write # The OIDC ID token is used for authentication with JSR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+      
+      - name: Update version in package.json & jsr.json 
+        run: |
+          bun .github/scripts/bump-version.ts --version=${{ needs.check-before-publishing.outputs.version }} --tag=next --suffix=${{ github.run_number }}
+          bun .github/scripts/jsrSetup.ts
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build dist files with tsc
+        run: bun run build
+
+      - name: Publish to JSR (canary)
+        # TODO: (diegocuehdz) remove line 122 dry-run after release and sure it works
+        run: |
+          CMD="bunx jsr publish  --allow-dirty  --dry-run"
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
+          echo "Running: $CMD"
+          eval "$CMD"
+
+  publish-to-github-packages:
+    name: Publish to Github Packages
+    runs-on: ubuntu-latest
+    needs: check-before-publishing
+    outputs:
+      status: ${{ job.status }}
+    permissions:
+      contents: read
+      packages: write # for GitHub Packages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+      
+      - name: Update version in package.json
+        run: |
+          bun .github/scripts/bump-version.ts --version=${{ needs.check-before-publishing.outputs.version }} --tag=next --suffix=${{ github.run_number }}
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build dist files with tsc
+        run: bun run build
+
+      - name: Publish to GitHub Packages
+        # TODO: (diegocuehdz) remove line 159 dry-run after release and sure it works
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          CMD="npm publish --registry=https://npm.pkg.github.com/ --tag next --access public --dry-run"
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
+          echo "Running: $CMD"
+          eval "$CMD"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify-slack:
+    name: Notify Slack
+    needs: [
+      check-before-publishing, 
+      publish-to-npm, 
+      publish-to-jsr, 
+      publish-to-github-packages
+    ]
+    if: always() && inputs.dryRun != true # Run even if previous jobs fail, but only when not in dry run mode
+    uses: ./.github/workflows/messaging-slack-publishing.yml
+    with:
+      message_header: "📦 Canary Package Publication Status"
+      version: ${{ needs.check-before-publishing.outputs.version }}
+      npm_status: ${{ needs.publish-to-npm.result }}
+      jsr_status: ${{ needs.publish-to-jsr.result }}
+      github_pkg_status: ${{ needs.publish-to-github-packages.result }}
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_DEPLOYMENTS_CANARY }}
