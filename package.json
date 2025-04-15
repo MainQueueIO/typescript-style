@@ -33,8 +33,7 @@
         "bun",
         "react",
         "eslint-config",
-        "eslint-plugin",
-        "biome"
+        "eslint-plugin"
     ],
     "scripts": {
         "build": "bun --bun tsc",

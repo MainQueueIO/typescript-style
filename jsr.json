@@ -14,7 +14,8 @@
             "./eslint.config.mjs",
             "./prettier.config.mjs",
             "./oxlint-base.json",
-            "./index.ts"
+            "./index.ts",
+            "README.md"
         ]
     },
     "exports": {
