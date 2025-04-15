@@ -1,0 +1,53 @@
+name: "[Cron] Close stale elements"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  close-stale-issues-and-prs:
+    name: Close stale issues and PRs
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Issues cron logic
+          days-before-issue-stale: 20
+          days-before-issue-close: 10
+          stale-issue-label: "stale"
+          stale-issue-message: "This issue has been marked as stale because it hasn't had any activity for 20 days. If this is still active, please comment on the issue and it will be marked as active again."
+          close-issue-message: "This issue has been closed because it has not had any activity for 30 days. Re-open it if you still want/need to work on it."
+          exempt-issue-labels: "skip-cron-ci"
+
+          # PR cron logic
+          days-before-pr-stale: 20
+          days-before-pr-close: 10
+          stale-pr-label: "stale"
+          stale-pr-message: "This PR has been marked as stale because it hasn't had any activity for 20 days. If this PR is still active, please comment on the PR or push new changes and it will be marked as active again."
+          close-pr-message: "This PR has been closed because it has not had any activity for 30 days. Either create a new PR or re-open this one."
+          exempt-pr-labels: "skip-cron-ci"
+
+  close-stale-branches: # here are what each param does https://github.com/beatlabs/delete-old-branches-action/blob/master/action.yml
+    name: Close stale branches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run delete-old-branches-action
+        uses: beatlabs/delete-old-branches-action@v0.0.10
+        with:
+          repo_token: ${{ github.token }}
+          date: '2 months ago'
+          delete_tags: false
+          minimum_tags: false
+          default_branches: main,develop,master
+          #extra_protected_branch_regex: master.*|main|develop|^release.*$
+          #extra_protected_tag_regex: '^v.*'
+          exclude_open_pr_branches: true
+          dry_run: false #move this to false to actually delete branches after being sure
+

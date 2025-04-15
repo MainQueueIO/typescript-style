@@ -1,0 +1,54 @@
+name: "[PR] Validate Title, Labels and Registries"
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+      - ready_for_review
+
+jobs:
+  check-pullrequest-label:
+    name: Check for labeled PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Platform label
+        uses: agilepathway/label-checker@v1.6.65
+        with:
+          any_of: ci,config,deps,scripts,eslint,prettier,oxlint
+          none_of: "@:"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+  check-pullrequest-title:
+    name: Check for semantic PR title
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5.5.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          wip: true
+          validateSingleCommit: true
+          scopes: |
+            ci 
+            config
+            deps
+            scripts
+            eslint
+            prettier
+            oxlint
+
+  check-pullrequest-canary-release:
+    name: Check for Canary Release on merge
+    needs: [check-pullrequest-label, check-pullrequest-title]
+    if: github.event.pull_request.draft == false
+    uses: ./.github/workflows/canary.yml
+    with:
+      dryRun: true
+    permissions:
+      contents: read
+      packages: write
+      id-token: write

@@ -1,0 +1,12 @@
+*.yml
+*.json
+*.sh
+
+Tests/**/*.test.ts
+tests/**/*.spec.ts
+**/Tests/**/*.test.ts
+**/tests/**/*.spec.ts
+
+node_modules/*
+**/node_modules/*
+bun.lock

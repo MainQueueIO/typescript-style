@@ -1,0 +1,9 @@
+# Docs: https://bun.sh/docs/test/
+[test]
+
+#coverage = true
+#coverageThreshold = 1
+
+# Activate when gitignore is updated
+#coverageReporter  = ["text", "lcov"]
+#coverageDir = "docs/tests"

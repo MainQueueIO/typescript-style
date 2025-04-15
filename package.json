@@ -1,0 +1,94 @@
+{
+    "name": "@mainqueueio/eslint-config",
+    "version": "0.0.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        "./eslint": "./dist/eslint.config.mjs",
+        "./prettier": "./dist/prettier.config.mjs",
+        "./oxlint": "./dist/oxlint-base.json",
+        ".": "./dist/index.js"
+    },
+    "author": "diegocuehdz",
+    "description": "Eslint, Prettier & Oxlint config for MainQueue projects",
+    "license": "MIT",
+    "packageManager": "bun@1.2.9",
+    "homepage": "https://github.com/MainQueueIO/",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MainQueueIO/typescript-style.git"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    },
+    "keywords": [
+        "eslint",
+        "prettier",
+        "oxlint",
+        "typescript",
+        "bun",
+        "react",
+        "eslint-config",
+        "eslint-plugin",
+        "biome"
+    ],
+    "scripts": {
+        "build": "bun --bun tsc",
+        "husky:prepare": "is-ci || husky",
+        "lint": "concurrently --kill-others-on-fail \"bun run lint:oxlinter\" \"bun run lint:tsc\" \"bun run lint:eslinter\" \"bun run lint:format\"",
+        "lint:tsc": "bun --bun tsc --noEmit",
+        "lint:format": "bun --bun prettier -c .",
+        "lint:format:fix": "bun lint:format -- --write",
+        "lint:eslinter": "eslint .",
+        "lint:eslinter:fix": "bun lint:eslint -- --fix",
+        "lint:oxlinter": "oxlint . --deny-warnings",
+        "release:ci": "release-it --ci",
+        "release:ci:version": "release-it --ci --config .release-it-version.json --release-version",
+        "release:local": "release-it",
+        "release:ci:canary": "release-it --ci --config .release-it-canary.json --preRelease=next --release-version"
+    },
+    "dependencies": {
+        "@eslint/compat": "^1.2.7",
+        "@eslint/js": "^9.21.0",
+        "eslint": "^9.23.0",
+        "eslint-config-prettier": "^10.1.1",
+        "eslint-import-resolver-typescript": "^4.2.5",
+        "eslint-plugin-jest": "^28.11.0",
+        "eslint-plugin-jsdoc": "^50.6.9",
+        "eslint-plugin-jsx-a11y": "^6.10.2",
+        "eslint-plugin-oxlint": "^0.16.3",
+        "eslint-plugin-prettier": "^5.2.5",
+        "eslint-plugin-react": "^7.37.4",
+        "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-react-refresh": "^0.4.19",
+        "eslint-plugin-sort-destructure-keys": "^2.0.0",
+        "eslint-plugin-testing-library": "^7.1.1",
+        "globals": "^16.0.0",
+        "oxlint": "^0.16.3",
+        "prettier": "^3.5.3",
+        "typescript-eslint": "^8.24.1"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^19.8.0",
+        "@commitlint/config-conventional": "^19.8.0",
+        "@release-it/conventional-changelog": "^10.0.0",
+        "@types/bun": "latest",
+        "concurrently": "^9.1.2",
+        "husky": "^9.1.7",
+        "is-ci": "^4.1.0",
+        "release-it": "^18.1.2"
+    },
+    "peerDependencies": {
+        "eslint": ">= 9",
+        "oxlint": "^0.16",
+        "prettier": ">= 3",
+        "typescript": "^5"
+    },
+    "overrides": {
+        "conventional-changelog-conventionalcommits": "8.0.0"
+    }
+}

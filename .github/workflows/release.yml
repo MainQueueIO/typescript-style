@@ -1,0 +1,170 @@
+
+name: "[Release] Release Stable Version"
+on: 
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: "Dry Run Mode"
+        type: boolean
+        default: true # TODO: (diegocuehdz) Set to false after release and Im sure it works
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Bump Version & Create Release Notes
+    outputs:
+      version: ${{ steps.release-version.outputs.version }}
+      status: ${{ job.status }}
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Initialize Git user
+      run: |
+        git config --global user.email "bot@mainqueue.io"
+        git config --global user.name "MainQueue.io Bot"
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+        registry-url: https://registry.npmjs.org/
+
+    - name: Setup Bun.js
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version-file: ".bun-version"
+
+    - name: Install the dependancies
+      run: bun install
+
+    - name: Authenticate with NPM
+      run: |
+        echo "//registry.npmjs.org/:_authToken=${{ secrets.ORG_MQIO_NPM_TOKEN }}" > ~/.npmrc
+    
+    - name: Build dist files with tsc
+      run: bun run build
+    
+    - name: Save upcoming version on Env
+      id: release-version
+      run: |
+        VERSION=$(bun release:ci:version)
+        echo "Version from script: $VERSION"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      run: |
+        CMD="bun release:ci"
+        if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+          CMD="$CMD --dry-run"
+        fi
+        echo "Running: $CMD"
+        eval "$CMD"
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.ORG_MQIO_NPM_TOKEN }}
+        NPM_TOKEN: ${{ secrets.ORG_MQIO_NPM_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+  publish-to-jsr:
+    runs-on: ubuntu-latest
+    name: Publish to JSR
+    needs: release
+    outputs:
+      status: ${{ job.status }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+        
+      - name: Pull for last job changes
+        run: |
+          git config --global --add safe.directory "$(pwd)"
+          git pull origin $(git rev-parse --abbrev-ref HEAD)
+      
+      - name: Setup Bun.js
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
+        
+      - name: Update version in jsr.json
+        run: |
+          bun .github/scripts/jsrSetup.ts
+
+      - name: Install the dependancies
+        run: bun install
+
+      - name: Publish JSR
+        run: |
+          CMD="bunx jsr publish --allow-dirty"
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
+          echo "Running: $CMD"
+          eval "$CMD"
+  
+  publish-to-github-packages:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    needs: release
+    outputs:
+      status: ${{ job.status }}
+    permissions:
+      contents: read
+      packages: write # for GitHub Packages
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+        
+      - name: Pull for last job changes
+        run: |
+          git config --global --add safe.directory "$(pwd)"
+          git pull origin $(git rev-parse --abbrev-ref HEAD)
+      
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Authenticate with NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.ORG_MQIO_NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Build dist files with tsc
+        run: bun run build
+
+      - name: Publish to GitHub Packages
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          CMD="npm publish --registry=https://npm.pkg.github.com/"
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
+          echo "Running: $CMD"
+          eval "$CMD"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify-slack:
+    name: Notify Slack
+    needs: [
+      release, 
+      publish-to-jsr, 
+      publish-to-github-packages
+    ]
+    if: always() && inputs.dryRun != true # Run even if previous jobs fail, but only when not in dry run mode
+    uses: ./.github/workflows/messaging-slack-publishing.yml
+    with:
+      message_header: "📦 Stable Package Published"
+      version: ${{ needs.release.outputs.version }}
+      npm_status: ${{ needs.release.outputs.status }}
+      jsr_status: ${{ needs.publish-to-jsr.outputs.status }}
+      github_pkg_status: ${{ needs.publish-to-github-packages.outputs.status }}
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_DEPLOYMENTS }}

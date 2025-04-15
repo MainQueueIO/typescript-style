@@ -1,0 +1,91 @@
+name: "Reusable Slack Notification"
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: "Package version that was published"
+      npm_status:
+        required: false
+        type: string
+        default: "skipped"
+        description: "Status of npm publishing job (success, failure, skipped)"
+      jsr_status:
+        required: false
+        type: string
+        default: "skipped"
+        description: "Status of JSR publishing job (success, failure, skipped)"
+      github_pkg_status:
+        required: false
+        type: string
+        default: "skipped"
+        description: "Status of GitHub Packages publishing job (success, failure, skipped)"
+      message_header:
+        required: false
+        type: string
+        default: "📦 Package Publication Status"
+        description: "Header for the Slack message"
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
+        description: "Slack webhook URL for sending notifications"
+
+jobs:
+  notify:
+    name: Send Slack Notification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send to Slack
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: webhook-trigger
+          payload: |
+            {
+              "text": "Package Publication Status",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ inputs.message_header }}",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ github.repository }} \nVersion *${{ inputs.version }}* publication results:"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn", 
+                      "text": "*NPM:* ${{ inputs.npm_status == 'success' && '✅ Success' || (inputs.npm_status == 'failure' && '❌ Failed' || '⏭️ Skipped') }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*JSR:* ${{ inputs.jsr_status == 'success' && '✅ Success' || (inputs.jsr_status == 'failure' && '❌ Failed' || '⏭️ Skipped') }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*GitHub Packages:* ${{ inputs.github_pkg_status == 'success' && '✅ Success' || (inputs.github_pkg_status == 'failure' && '❌ Failed' || '⏭️ Skipped') }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>"
+                    }
+                  ]
+                }
+              ]
+            }

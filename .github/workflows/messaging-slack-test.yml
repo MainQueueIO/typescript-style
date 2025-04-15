@@ -1,0 +1,67 @@
+name: "[Messaging] Slack - Test Message"
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: "Message to send to Slack"
+        required: true
+        type: string
+        default: "Test message from GitHub Actions"
+      send_as_blocks:
+        description: "Send as formatted blocks instead of plain text"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  send-slack-message:
+    name: Send Test Message to Slack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send plain text message
+        if: ${{ !inputs.send_as_blocks }}
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL_CHANNEL_TEST }}
+          webhook-type: webhook-trigger
+          payload: |
+            {
+              "text": "${{ inputs.message }}"
+            }
+
+      - name: Send formatted message with blocks
+        if: ${{ inputs.send_as_blocks }}
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL_CHANNEL_TEST }}
+          webhook-type: webhook-trigger
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🧪 Test Message",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ inputs.message }}"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "Sent from <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|GitHub Actions> at ${{ github.event.repository.full_name }}"
+                    }
+                  ]
+                }
+              ]
+            }
