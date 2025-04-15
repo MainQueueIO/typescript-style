@@ -1,4 +1,5 @@
 {
+	"$schema": "https://unpkg.com/release-it@18/schema/release-it.json",
 	"git": {
 		"commitMessage": "chore: release v${version}",
 		"requireBranch": "main"
@@ -20,6 +21,9 @@
 		"publishArgs": [
 			"--access=public"
 		]
+	},
+	"hooks": {
+		"before:bump": "bun .github/scripts/jsrSetup.ts  --version=$(bun release:ci:version)"
 	},
 	"plugins": {
 		"@release-it/conventional-changelog": {
