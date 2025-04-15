@@ -6,7 +6,7 @@ on:
       dryRun:
         description: "Dry Run Mode"
         type: boolean
-        default: true # TODO: (diegocuehdz) Set to false after release and Im sure it works
+        default: false
   workflow_call: # This workflow can be called from other workflows, specifically for PR check for upcoming release on merged PR
     inputs:
       dryRun:
