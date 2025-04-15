@@ -1,0 +1,11 @@
+{
+    "$schema": "https://jsr.io/schema/config-file.v1.json",
+    "name": "@mainqueueio/eslint-config",
+    "version": "0.0.0",
+    "exports": {
+        "./eslint": "./eslint.config.mjs",
+        "./prettier": "./prettier.config.mjs",
+        "./oxlint": "./oxlint-base.json",
+        ".": "./index.ts"
+    }
+}
