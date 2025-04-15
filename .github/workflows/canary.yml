@@ -12,7 +12,7 @@ on:
       dryRun:
         description: "Dry Run Mode for called workflows"
         type: boolean
-        default: false # TODO: (diegocuehdz) Set to true after release and Im sure it works
+        default: true
   push:
     branches: [main]
 
@@ -81,9 +81,9 @@ jobs:
         # TODO: (diegocuehdz) remove line 83 dry-run after release and sure it works
         run: |
           CMD="npm publish --tag next --access public --dry-run" 
-          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
-            CMD="$CMD --dry-run"
-          fi
+          #if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+          #  CMD="$CMD --dry-run"
+          #fi
           echo "Running: $CMD"
           eval "$CMD"
         env:
@@ -120,9 +120,9 @@ jobs:
         # TODO: (diegocuehdz) remove line 122 dry-run after release and sure it works
         run: |
           CMD="bunx jsr publish  --allow-dirty  --dry-run"
-          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
-            CMD="$CMD --dry-run"
-          fi
+          #if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+          #  CMD="$CMD --dry-run"
+          #fi
           echo "Running: $CMD"
           eval "$CMD"
 
@@ -157,9 +157,9 @@ jobs:
         run: |
           npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
           CMD="npm publish --registry=https://npm.pkg.github.com/ --tag next --access public --dry-run"
-          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
-            CMD="$CMD --dry-run"
-          fi
+          #if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+          #  CMD="$CMD --dry-run"
+          #fi
           echo "Running: $CMD"
           eval "$CMD"
         env:
