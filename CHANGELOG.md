@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0 (2025-04-15)
+
+### 🚀 New Features
+
+* **ci:** add jsr included files ([#2](https://github.com/MainQueueIO/typescript-style/issues/2)) ([f27d8d1](https://github.com/MainQueueIO/typescript-style/commit/f27d8d10739cda716873211afee236ecff687b5f))
+
 ## 0.0.1 (2025-04-01)
 
 ### 📦 Miscellaneous tasks
