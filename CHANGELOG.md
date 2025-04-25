@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 (2025-04-25)
+
+### 🐛 Bug Fixes
+
+* **deps:** move eslint-plugin-import to deps ([#5](https://github.com/MainQueueIO/typescript-style/issues/5)) ([c2f312f](https://github.com/MainQueueIO/typescript-style/commit/c2f312f62786b4d7d3a809d380935c04a2e21123))
+
 ## 0.1.1 (2025-04-15)
 
 ### 🐛 Bug Fixes
