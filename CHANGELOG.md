@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3 (2025-07-23)
+
+### 📦 Miscellaneous tasks
+
+* **deps:** bump libs to latest as of 23-july-2025 ([#7](https://github.com/MainQueueIO/typescript-style/issues/7)) ([696fb01](https://github.com/MainQueueIO/typescript-style/commit/696fb01a1d2eb934054690ffa984dce5e692daf9))
+
 ## 0.1.2 (2025-04-25)
 
 ### 🐛 Bug Fixes
