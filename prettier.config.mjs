@@ -1,10 +1,12 @@
+//import { type Config } from "prettier";
+
 const config = {
-  arrowParens: "always",
+  arrowParens: 'always',
   bracketSameLine: false,
-  endOfLine: "auto",
+  endOfLine: 'auto',
   printWidth: 80,
   singleQuote: true,
-  trailingComma: "all"
+  trailingComma: 'all',
 };
 
 export default config;

@@ -1,15 +1,15 @@
-name: "[Messaging] Slack - Test Message"
+name: '[Messaging] Slack - Test Message'
 
 on:
   workflow_dispatch:
     inputs:
       message:
-        description: "Message to send to Slack"
+        description: 'Message to send to Slack'
         required: true
         type: string
-        default: "Test message from GitHub Actions"
+        default: 'Test message from GitHub Actions'
       send_as_blocks:
-        description: "Send as formatted blocks instead of plain text"
+        description: 'Send as formatted blocks instead of plain text'
         required: false
         type: boolean
         default: false
