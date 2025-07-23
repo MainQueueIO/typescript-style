@@ -1,4 +1,4 @@
-name: "Reusable Slack Notification"
+name: 'Reusable Slack Notification'
 
 on:
   workflow_call:
@@ -6,31 +6,31 @@ on:
       version:
         required: true
         type: string
-        description: "Package version that was published"
+        description: 'Package version that was published'
       npm_status:
         required: false
         type: string
-        default: "skipped"
-        description: "Status of npm publishing job (success, failure, skipped)"
+        default: 'skipped'
+        description: 'Status of npm publishing job (success, failure, skipped)'
       jsr_status:
         required: false
         type: string
-        default: "skipped"
-        description: "Status of JSR publishing job (success, failure, skipped)"
+        default: 'skipped'
+        description: 'Status of JSR publishing job (success, failure, skipped)'
       github_pkg_status:
         required: false
         type: string
-        default: "skipped"
-        description: "Status of GitHub Packages publishing job (success, failure, skipped)"
+        default: 'skipped'
+        description: 'Status of GitHub Packages publishing job (success, failure, skipped)'
       message_header:
         required: false
         type: string
-        default: "📦 Package Publication Status"
-        description: "Header for the Slack message"
+        default: '📦 Package Publication Status'
+        description: 'Header for the Slack message'
     secrets:
       SLACK_WEBHOOK_URL:
         required: true
-        description: "Slack webhook URL for sending notifications"
+        description: 'Slack webhook URL for sending notifications'
 
 jobs:
   notify:

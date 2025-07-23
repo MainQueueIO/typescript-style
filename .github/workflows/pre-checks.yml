@@ -1,4 +1,4 @@
-name: "[PR] Validate Title, Labels and Registries"
+name: '[PR] Validate Title, Labels and Registries'
 on:
   pull_request:
     types:
@@ -19,7 +19,7 @@ jobs:
         uses: agilepathway/label-checker@v1.6.65
         with:
           any_of: ci,config,deps,scripts,eslint,prettier,oxlint
-          none_of: "@:"
+          none_of: '@:'
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
   check-pullrequest-title:

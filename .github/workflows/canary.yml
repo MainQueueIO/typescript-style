@@ -1,16 +1,16 @@
-name: "[Release] Publish Canary Version"
+name: '[Release] Publish Canary Version'
 
 on:
   workflow_dispatch:
     inputs:
       dryRun:
-        description: "Dry Run Mode"
+        description: 'Dry Run Mode'
         type: boolean
         default: false
   workflow_call: # This workflow can be called from other workflows, specifically for PR check for upcoming release on merged PR
     inputs:
       dryRun:
-        description: "Dry Run Mode for called workflows"
+        description: 'Dry Run Mode for called workflows'
         type: boolean
         default: true
   push:
@@ -26,20 +26,20 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history
-          ref: ${{ github.head_ref || github.ref_name }}  # Properly checkout the PR branch or main branch
+          fetch-depth: 0 # Fetch all history
+          ref: ${{ github.head_ref || github.ref_name }} # Properly checkout the PR branch or main branch
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version-file: ".bun-version"  
+          bun-version-file: '.bun-version'
 
       - name: Install Deps via Bun
-        run: bun install    
-      
+        run: bun install
+
       - name: Run checks before publishing
         run: bun test
-      
+
       - name: Create NPM Canary release
         id: canary-release-version
         run: |
@@ -59,10 +59,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
-      
+
       - name: Update version in package.json
         run: |
           bun .github/scripts/bump-version.ts --version=${{ needs.check-before-publishing.outputs.version }} --tag=next --suffix=${{ github.run_number }}
@@ -100,11 +100,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
-      
-      - name: Update version in package.json & jsr.json 
+
+      - name: Update version in package.json & jsr.json
         run: |
           bun .github/scripts/bump-version.ts --version=${{ needs.check-before-publishing.outputs.version }} --tag=next --suffix=${{ github.run_number }}
           bun .github/scripts/jsrSetup.ts
@@ -136,10 +136,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
-      
+
       - name: Update version in package.json
         run: |
           bun .github/scripts/bump-version.ts --version=${{ needs.check-before-publishing.outputs.version }} --tag=next --suffix=${{ github.run_number }}
@@ -164,16 +164,17 @@ jobs:
 
   notify-slack:
     name: Notify Slack
-    needs: [
-      check-before-publishing, 
-      publish-to-npm, 
-      publish-to-jsr, 
-      publish-to-github-packages
-    ]
+    needs:
+      [
+        check-before-publishing,
+        publish-to-npm,
+        publish-to-jsr,
+        publish-to-github-packages,
+      ]
     if: always() && inputs.dryRun != true # Run even if previous jobs fail, but only when not in dry run mode
     uses: ./.github/workflows/messaging-slack-publishing.yml
     with:
-      message_header: "📦 Canary Package Publication Status"
+      message_header: '📦 Canary Package Publication Status'
       version: ${{ needs.check-before-publishing.outputs.version }}
       npm_status: ${{ needs.publish-to-npm.result }}
       jsr_status: ${{ needs.publish-to-jsr.result }}
