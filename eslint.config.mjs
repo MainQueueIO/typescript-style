@@ -14,6 +14,7 @@ import sortDestructureKeys from 'eslint-plugin-sort-destructure-keys';
 import importRules from 'eslint-plugin-import';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import testingLibrary from 'eslint-plugin-testing-library';
+import reactNative from 'eslint-plugin-react-native';
 
 // , parser: tsParser?
 
