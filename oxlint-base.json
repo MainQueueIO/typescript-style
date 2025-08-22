@@ -16,6 +16,14 @@
     "no-console": 2,
     "jest/no-identical-title": 2,
     "jest/no-alias-methods": 2,
-    "jsx-a11y/label-has-associated-control": "off"
+    "jsx-a11y/label-has-associated-control": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "ignoreRestSiblings": true,
+        "varsIgnorePattern": "[iI]gnored",
+        "argsIgnorePattern": "^_"
+      }
+    ]
   }
 }

@@ -106,7 +106,7 @@ export default [
           shorthandFirst: true,
           shorthandLast: false,
           ignoreCase: true,
-          noSortAlphabetically: true,
+          noSortAlphabetically: false,
         },
       ],
       'sort-imports': [
