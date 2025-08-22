@@ -73,6 +73,8 @@ export default [
         'error',
         {
           ignoreRestSiblings: true,
+          varsIgnorePattern: '[iI]gnored',
+          argsIgnorePattern: '^_',
         },
       ],
       'jsx-a11y/label-has-associated-control': 'off',
