@@ -69,14 +69,14 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off',
       //OxLint
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          ignoreRestSiblings: true,
-          varsIgnorePattern: '[iI]gnored',
-          argsIgnorePattern: '^_',
-        },
-      ],
+      //'@typescript-eslint/no-unused-vars': [
+      //  'error',
+      //  {
+      //    ignoreRestSiblings: true,
+      //    varsIgnorePattern: '[iI]gnored',
+      //    argsIgnorePattern: '^_',
+      //  },
+      //],
       'jsx-a11y/label-has-associated-control': 'off',
 
       //Extra
