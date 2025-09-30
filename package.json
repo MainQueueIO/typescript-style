@@ -15,7 +15,7 @@
     "author": "diegocuehdz",
     "description": "Eslint, Prettier & Oxlint config for MainQueue projects",
     "license": "MIT",
-    "packageManager": "bun@1.2.19",
+    "packageManager": "bun@1.2.23",
     "homepage": "https://github.com/MainQueueIO/",
     "repository": {
         "type": "git",
