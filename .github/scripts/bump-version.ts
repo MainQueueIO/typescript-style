@@ -1,4 +1,5 @@
 // scripts/bump-version.ts
+// oxlint-disable no-console
 import { readFileSync, writeFileSync } from 'fs';
 
 const args = Bun.argv;
