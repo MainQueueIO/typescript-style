@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4 (2025-09-30)
+
+### 📦 Miscellaneous tasks
+
+* **deps:** bump jsdoc to latest ([#18](https://github.com/MainQueueIO/typescript-style/issues/18)) ([a13824f](https://github.com/MainQueueIO/typescript-style/commit/a13824f5f7b86f74fda8d776fa5ef40aaeda2aa4))
+
 ## 0.1.3 (2025-07-23)
 
 ### 📦 Miscellaneous tasks
