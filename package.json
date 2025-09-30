@@ -77,8 +77,8 @@
         "@commitlint/cli": "^19.8.0",
         "@commitlint/config-conventional": "^19.8.0",
         "@release-it/conventional-changelog": "^10.0.0",
-        "@types/bun": "latest",
-        "concurrently": "^9.2.0",
+        "@types/bun": "1.2.23",
+        "concurrently": "^9.2.1",
         "husky": "^9.1.7",
         "is-ci": "^4.1.0",
         "release-it": "^18.1.2"
