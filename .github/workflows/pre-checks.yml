@@ -15,10 +15,15 @@ jobs:
     name: Check for labeled PR
     runs-on: ubuntu-latest
     steps:
-      - name: Platform label
+      - name: Check supported labels
         uses: agilepathway/label-checker@v1.6.65
         with:
           any_of: ci,config,deps,scripts,eslint,prettier,oxlint
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check forbidden labels
+        uses: agilepathway/label-checker@v1.6.65
+        with:
+          prefix_mode: true
           none_of: "@:"
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
