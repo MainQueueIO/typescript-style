@@ -1,4 +1,4 @@
-name: '[PR] Validate Title, Labels and Registries'
+name: "[PR] Validate Title, Labels and Registries"
 on:
   pull_request:
     types:
@@ -19,14 +19,14 @@ jobs:
         uses: agilepathway/label-checker@v1.6.65
         with:
           any_of: ci,config,deps,scripts,eslint,prettier,oxlint
-          none_of: '@:'
+          none_of: "@:"
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
   check-pullrequest-title:
     name: Check for semantic PR title
     runs-on: ubuntu-latest
     steps:
-      - uses: amannn/action-semantic-pull-request@v5.5.3
+      - uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

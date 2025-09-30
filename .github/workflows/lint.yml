@@ -1,4 +1,4 @@
-name: '[PR] Lint & Format Code'
+name: "[PR] Lint & Format Code"
 on:
   pull_request:
 
@@ -9,12 +9,12 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version-file: '.bun-version'
+          bun-version-file: ".bun-version"
 
       - name: Install Deps via Bun
         run: bun install

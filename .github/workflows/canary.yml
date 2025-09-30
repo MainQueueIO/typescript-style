@@ -1,16 +1,16 @@
-name: '[Release] Publish Canary Version'
+name: "[Release] Publish Canary Version"
 
 on:
   workflow_dispatch:
     inputs:
       dryRun:
-        description: 'Dry Run Mode'
+        description: "Dry Run Mode"
         type: boolean
         default: false
   workflow_call: # This workflow can be called from other workflows, specifically for PR check for upcoming release on merged PR
     inputs:
       dryRun:
-        description: 'Dry Run Mode for called workflows'
+        description: "Dry Run Mode for called workflows"
         type: boolean
         default: true
   push:
@@ -24,7 +24,7 @@ jobs:
       version: ${{ steps.canary-release-version.outputs.version }}
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Fetch all history
           ref: ${{ github.head_ref || github.ref_name }} # Properly checkout the PR branch or main branch
@@ -32,7 +32,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version-file: '.bun-version'
+          bun-version-file: ".bun-version"
 
       - name: Install Deps via Bun
         run: bun install
@@ -58,7 +58,7 @@ jobs:
       packages: write # for GitHub Packages
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
@@ -99,7 +99,7 @@ jobs:
       id-token: write # The OIDC ID token is used for authentication with JSR
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
@@ -135,7 +135,7 @@ jobs:
       packages: write # for GitHub Packages
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
@@ -174,7 +174,7 @@ jobs:
     if: always() && inputs.dryRun != true # Run even if previous jobs fail, but only when not in dry run mode
     uses: ./.github/workflows/messaging-slack-publishing.yml
     with:
-      message_header: '📦 Canary Package Publication Status'
+      message_header: "📦 Canary Package Publication Status"
       version: ${{ needs.check-before-publishing.outputs.version }}
       npm_status: ${{ needs.publish-to-npm.result }}
       jsr_status: ${{ needs.publish-to-jsr.result }}
