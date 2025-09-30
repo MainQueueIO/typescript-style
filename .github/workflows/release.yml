@@ -1,11 +1,11 @@
-name: '[Release] Release Stable Version'
+name: "[Release] Release Stable Version"
 on:
   workflow_dispatch:
     inputs:
       dryRun:
-        description: 'Dry Run Mode'
+        description: "Dry Run Mode"
         type: boolean
-        default: true # TODO: (diegocuehdz) Set to false after release and Im sure it works
+        default: false
 
 jobs:
   release:
@@ -16,7 +16,7 @@ jobs:
       status: ${{ job.status }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
 
       - name: Initialize Git user
         run: |
@@ -24,15 +24,15 @@ jobs:
           git config --global user.name "MainQueue.io Bot"
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
           registry-url: https://registry.npmjs.org/
 
       - name: Setup Bun.js
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version-file: '.bun-version'
+          bun-version-file: ".bun-version"
 
       - name: Install the dependancies
         run: bun install
@@ -75,7 +75,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -87,7 +87,7 @@ jobs:
       - name: Setup Bun.js
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version-file: '.bun-version'
+          bun-version-file: ".bun-version"
 
       - name: Update version in jsr.json
         run: |
@@ -116,7 +116,7 @@ jobs:
       packages: write # for GitHub Packages
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -156,7 +156,7 @@ jobs:
     if: always() && inputs.dryRun != true # Run even if previous jobs fail, but only when not in dry run mode
     uses: ./.github/workflows/messaging-slack-publishing.yml
     with:
-      message_header: '📦 Stable Package Published'
+      message_header: "📦 Stable Package Published"
       version: ${{ needs.release.outputs.version }}
       npm_status: ${{ needs.release.outputs.status }}
       jsr_status: ${{ needs.publish-to-jsr.outputs.status }}
