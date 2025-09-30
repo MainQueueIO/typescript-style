@@ -19,6 +19,7 @@ jobs:
         uses: agilepathway/label-checker@v1.6.65
         with:
           any_of: ci,config,deps,scripts,eslint,prettier,oxlint
+          prefix_mode: true
           none_of: "@:"
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
