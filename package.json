@@ -63,6 +63,7 @@
         "eslint-plugin-oxlint": "^1.19.0",
         "eslint-plugin-prettier": "^5.5.4",
         "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-compiler": "^19.1.0-rc.2",
         "eslint-plugin-react-hooks": "^6.1.0",
         "eslint-plugin-react-native": "^5.0.0",
         "eslint-plugin-react-refresh": "^0.4.23",
@@ -70,6 +71,7 @@
         "eslint-plugin-testing-library": "^7.11.0",
         "globals": "^16.4.0",
         "oxlint": "^1.19.0",
+        "oxlint-tsgolint": "^0.2.0",
         "prettier": "^3.6.2",
         "typescript-eslint": "^8.45.0"
     },
@@ -79,10 +81,8 @@
         "@release-it/conventional-changelog": "^10.0.0",
         "@types/bun": "1.2.23",
         "concurrently": "^9.2.1",
-        "eslint-plugin-react-compiler": "^19.1.0-rc.2",
         "husky": "^9.1.7",
         "is-ci": "^4.1.0",
-        "oxlint-tsgolint": "^0.2.0",
         "release-it": "^18.1.2"
     },
     "peerDependencies": {
