@@ -7,7 +7,10 @@
     "import",
     "jsx-a11y",
     "jest",
-    "jsdoc"
+    "vitest",
+    "jsdoc",
+    "promise",
+    "node"
   ],
   "rules": {
     "import/no-cycle": "off",
