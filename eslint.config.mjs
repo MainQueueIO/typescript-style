@@ -15,13 +15,13 @@ import importRules from 'eslint-plugin-import';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import testingLibrary from 'eslint-plugin-testing-library';
 import reactNative from 'eslint-plugin-react-native';
-
-// , parser: tsParser?
+import reactCompiler from 'eslint-plugin-react-compiler';
 
 export default [
   { languageOptions: { globals: globals.browser } },
   js.configs.recommended,
   ...ts.configs.recommended,
+  reactCompiler.configs.recommended,
   jsdoc.configs['flat/recommended'],
   ...fixupConfigRules([
     {
