@@ -45,6 +45,8 @@
         "lint:eslinter": "eslint  \"./{*.ts,*.tsx}\" --max-warnings 0",
         "lint:eslinter:fix": "bun lint:eslinter -- --fix",
         "lint:oxlinter": "oxlint -c oxlint-base.json",
+        "lint:oxlinter:type-aware": "bun lint:oxlinter -- --type-aware",
+        "lint:oxlinter:fix": "bun lint:oxlinter -- --fix --fix-suggestions",
         "release:ci": "release-it --ci",
         "release:ci:version": "release-it --ci --config .release-it-version.json --release-version",
         "release:local": "release-it",
