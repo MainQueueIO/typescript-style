@@ -24,7 +24,7 @@ jobs:
           git config --global user.name "MainQueue.io Bot"
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
           registry-url: https://registry.npmjs.org/
