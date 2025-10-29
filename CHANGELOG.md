@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.5 (2025-10-29)
+
+### 📦 Miscellaneous tasks
+
+* **deps:** bump setup-node action to latest ([#24](https://github.com/MainQueueIO/typescript-style/issues/24)) ([62e484a](https://github.com/MainQueueIO/typescript-style/commit/62e484ac6a68078b27020abd56e9d7426395ad45))
+
 ## 0.1.4 (2025-09-30)
 
 ### 📦 Miscellaneous tasks
