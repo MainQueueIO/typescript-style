@@ -67,14 +67,14 @@
         "eslint-plugin-prettier": "^5.5.4",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-compiler": "^19.1.0-rc.2",
-        "eslint-plugin-react-hooks": "^6.1.1",
+        "eslint-plugin-react-hooks": "^7.0.1",
         "eslint-plugin-react-native": "^5.0.0",
         "eslint-plugin-react-refresh": "^0.4.24",
         "eslint-plugin-sort-destructure-keys": "^2.0.0",
         "eslint-plugin-testing-library": "^7.13.3",
         "globals": "^16.4.0",
         "oxlint": "^1.24.0",
-        "oxlint-tsgolint": "^0.2.1",
+        "oxlint-tsgolint": "^0.3.0",
         "prettier": "^3.6.2",
         "typescript-eslint": "^8.46.2"
     },
@@ -89,7 +89,7 @@
     },
     "peerDependencies": {
         "eslint": ">= 9",
-        "oxlint": "^1.12.0",
+        "oxlint": "^1.24.0",
         "prettier": ">= 3",
         "typescript": "^5"
     },
