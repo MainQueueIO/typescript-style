@@ -8,6 +8,7 @@
     ],
     "exports": {
         "./eslint": "./dist/eslint.config.mjs",
+        "./eslint-vue": "./dist/eslint-vue.config.mjs",
         "./prettier": "./dist/prettier.config.mjs",
         "./oxlint": "./dist/oxlint-base.json",
         ".": "./dist/index.js"
