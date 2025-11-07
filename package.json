@@ -69,7 +69,7 @@
         "eslint-plugin-prettier": "^5.5.4",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-compiler": "^19.1.0-rc.2",
-        "eslint-plugin-react-hooks": "^7.0.1",
+        "eslint-plugin-react-hooks": "^6.1.1",
         "eslint-plugin-react-native": "^5.0.0",
         "eslint-plugin-react-refresh": "^0.4.24",
         "eslint-plugin-sort-destructure-keys": "^2.0.0",
@@ -97,6 +97,7 @@
         "typescript": "^5"
     },
     "overrides": {
-        "conventional-changelog-conventionalcommits": "8.0.0"
+        "conventional-changelog-conventionalcommits": "8.0.0",
+        "eslint-plugin-react-hooks@6.1.1>zod": "3.25.1"
     }
 }
