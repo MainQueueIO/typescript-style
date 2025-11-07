@@ -98,6 +98,6 @@
     },
     "overrides": {
         "conventional-changelog-conventionalcommits": "8.0.0",
-        "eslint-plugin-react-hooks@6.1.1>zod": "3.25.1"
+        "zod": "3.25.1"
     }
 }
