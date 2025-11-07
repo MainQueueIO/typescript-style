@@ -54,18 +54,18 @@
         "release:ci:canary": "release-it --ci --config .release-it-canary.json --preRelease=next --release-version"
     },
     "dependencies": {
-        "@eslint/compat": "^1.4.0",
-        "@eslint/js": "^9.38.0",
+        "@eslint/compat": "^1.4.1",
+        "@eslint/js": "^9.39.1",
         "@vue/eslint-config-typescript": "^14.6.0",
         "concurrently": "^9.2.1",
-        "eslint": "^9.38.0",
+        "eslint": "^9.39.1",
         "eslint-config-prettier": "^10.1.8",
         "eslint-import-resolver-typescript": "^4.4.4",
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-jest": "^29.0.1",
         "eslint-plugin-jsdoc": "^61.1.1",
         "eslint-plugin-jsx-a11y": "^6.10.2",
-        "eslint-plugin-oxlint": "^1.24.0",
+        "eslint-plugin-oxlint": "^1.26.0",
         "eslint-plugin-prettier": "^5.5.4",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-compiler": "^19.1.0-rc.2",
@@ -75,11 +75,11 @@
         "eslint-plugin-sort-destructure-keys": "^2.0.0",
         "eslint-plugin-testing-library": "^7.13.3",
         "eslint-plugin-vue": "^10.5.1",
-        "globals": "^16.4.0",
-        "oxlint": "^1.24.0",
-        "oxlint-tsgolint": "^0.3.0",
+        "globals": "^16.5.0",
+        "oxlint": "^1.26.0",
+        "oxlint-tsgolint": "^0.5.1",
         "prettier": "^3.6.2",
-        "typescript-eslint": "^8.46.2"
+        "typescript-eslint": "^8.46.3"
     },
     "devDependencies": {
         "@commitlint/cli": "^19.8.0",
@@ -92,7 +92,7 @@
     },
     "peerDependencies": {
         "eslint": ">= 9",
-        "oxlint": "^1.24.0",
+        "oxlint": "^1",
         "prettier": ">= 3",
         "typescript": "^5"
     },
