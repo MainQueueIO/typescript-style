@@ -1,23 +1,18 @@
-name: "[PR] Lint & Format Code"
+name: "[DX] Lint & Format Code"
 on:
+  push:
+    branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   run-linters:
-    name: Run linters
+    name: "Run linters"
     runs-on: ubuntu-latest
-
+    if: github.event.pull_request.draft == false
     steps:
-      - name: Check out Git repository
+      - name: "Check out Git repository"
         uses: actions/checkout@v5
 
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: ".bun-version"
-
-      - name: Install Deps via Bun
-        run: bun install
-
-      - name: Run linters
-        run: bun lint
+      - name: "Run Bun Linters"
+        uses: ./.github/actions/linters
