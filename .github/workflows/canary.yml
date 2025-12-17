@@ -35,10 +35,7 @@ jobs:
           bun-version-file: ".bun-version"
 
       - name: Install Deps via Bun
-        run: bun install
-
-      - name: Run checks before publishing
-        run: bun lint
+        run: bun install --frozen-lockfile
 
       - name: Create NPM Canary release
         id: canary-release-version
@@ -68,7 +65,7 @@ jobs:
           bun .github/scripts/bump-version.ts --version=${{ needs.check-before-publishing.outputs.version }} --tag=next --suffix=${{ github.run_number }}
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --production
 
       - name: Authenticate with NPM
         run: |
@@ -110,7 +107,7 @@ jobs:
           bun .github/scripts/jsrSetup.ts
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --production
 
       - name: Build dist files with tsc
         run: bun run build
@@ -145,7 +142,7 @@ jobs:
           bun .github/scripts/bump-version.ts --version=${{ needs.check-before-publishing.outputs.version }} --tag=next --suffix=${{ github.run_number }}
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --production
 
       - name: Build dist files with tsc
         run: bun run build

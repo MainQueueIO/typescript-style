@@ -30,6 +30,7 @@
     "index.ts",
     "oxlint-base.json",
     "prettier.config.mjs",
-    "eslint.config.mjs"
+    "eslint.config.mjs",
+    "eslint-vue.config.mjs"
   ],
 }

@@ -13,6 +13,7 @@
     "include": [
       "./dist",
       "./eslint.config.mjs",
+      "./eslint-vue.config.mjs",
       "./prettier.config.mjs",
       "./oxlint-base.json",
       "./index.ts",
@@ -21,6 +22,7 @@
   },
   "exports": {
     "./eslint": "./eslint.config.mjs",
+    "./eslint-vue": "./eslint-vue.config.mjs",
     "./prettier": "./prettier.config.mjs",
     "./oxlint": "./oxlint-base.json",
     ".": "./index.ts"

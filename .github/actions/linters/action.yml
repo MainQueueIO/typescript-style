@@ -1,0 +1,17 @@
+name: "[DX] Linters"
+description: "Sets up Bun, installs deps, and runs linters concurrently. The processes run are typechecking via tsgo oxlint, eslint, and prettier."
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version-file: .bun-version
+
+    - name: Install deps
+      shell: bash
+      run: bun install
+
+    - name: Run linters
+      shell: bash
+      run: bun lint
