@@ -155,8 +155,8 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Build
-        run: bun .github/scripts/build-and-bundle.ts
+      - name: Build dist files with tsc
+        run: bun run build
 
       - name: Publish to NPM
         run: |
@@ -210,8 +210,8 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Build
-        run: bun .github/scripts/build-and-bundle.ts
+      - name: Build dist files with tsc
+        run: bun run build
 
       - name: Publish to JSR
         run: |
@@ -255,8 +255,8 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Build
-        run: bun .github/scripts/build-and-bundle.ts
+      - name: Build dist files with tsc
+        run: bun run build
 
       - name: Publish to GitHub Packages
         run: |
