@@ -1,0 +1,293 @@
+name: "[Release] Publish Package"
+
+on:
+  push:
+    branches: [main] # → auto canary
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: "Release type"
+        type: choice
+        options:
+          - canary
+          - stable
+        default: canary
+      dryRun:
+        description: "Dry Run Mode"
+        type: boolean
+        default: false
+  workflow_call: # Called by pr-checks.yml for PR dry-runs
+    inputs:
+      releaseType:
+        description: "Release type (canary or stable)"
+        type: string
+        default: canary
+      dryRun:
+        description: "Dry Run Mode"
+        type: boolean
+        default: true
+
+jobs:
+  prepare:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.release-version.outputs.version }}
+      release-type: ${{ steps.set-release-type.outputs.release-type }}
+      display-version: ${{ steps.display-version.outputs.display-version }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Determine release type
+        id: set-release-type
+        run: |
+          RELEASE_TYPE="${{ inputs.releaseType || 'canary' }}"
+          echo "release-type=$RELEASE_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Get release version
+        id: release-version
+        run: |
+          if [[ "${{ steps.set-release-type.outputs.release-type }}" == "stable" ]]; then
+            VERSION=$(bun release:ci:version)
+          else
+            VERSION=$(bun release:ci:canary)
+          fi
+          echo "Version from script: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Compute display version
+        id: display-version
+        run: |
+          if [[ "${{ steps.set-release-type.outputs.release-type }}" == "canary" ]]; then
+            BASE=$(echo "${{ steps.release-version.outputs.version }}" | cut -d'-' -f1)
+            echo "display-version=${BASE}-next.${{ github.run_number }}" >> $GITHUB_OUTPUT
+          else
+            echo "display-version=${{ steps.release-version.outputs.version }}" >> $GITHUB_OUTPUT
+          fi
+
+  release-stable:
+    name: Bump Version & Create Release Notes
+    runs-on: ubuntu-latest
+    needs: prepare
+    if: needs.prepare.outputs.release-type == 'stable'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Initialize Git user
+        run: |
+          git config --global user.email "bot@mainqueue.io"
+          git config --global user.name "MainQueue.io Bot"
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Create Release
+        run: |
+          CMD="bunx release-it --ci --verbose --no-npm.publish"
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
+          echo "Running: $CMD"
+          eval "$CMD"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-to-npm:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    needs: [prepare, release-stable]
+    permissions:
+      contents: write
+      id-token: write # Enables OIDC token minting for npm trusted publishing
+    if: always() && (needs.release-stable.result == 'success' || needs.release-stable.result == 'skipped')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Pull latest (stable only — picks up release-it version commit)
+        if: needs.prepare.outputs.release-type == 'stable'
+        run: |
+          git config --global --add safe.directory "$(pwd)"
+          git pull origin $(git rev-parse --abbrev-ref HEAD)
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Upgrade npm (required for OIDC Trusted Publishing)
+        run: npm install -g npm@latest
+
+      - name: Bump canary version
+        if: needs.prepare.outputs.release-type == 'canary'
+        run: |
+          bun .github/scripts/bump-version.ts --version=${{ needs.prepare.outputs.version }} --tag=next --suffix=${{ github.run_number }}
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        run: bun .github/scripts/build-and-bundle.ts
+
+      - name: Publish to NPM
+        run: |
+          if [[ "${{ needs.prepare.outputs.release-type }}" == "stable" ]]; then
+            CMD="npm publish --access public --provenance"
+          else
+            CMD="npm publish --tag next --access public --provenance"
+          fi
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
+          echo "Running: $CMD"
+          eval "$CMD"
+
+  publish-to-jsr:
+    name: Publish to JSR
+    runs-on: ubuntu-latest
+    needs: [prepare, release-stable]
+    permissions:
+      contents: write
+      id-token: write # OIDC for JSR authentication
+    if: always() && (needs.release-stable.result == 'success' || needs.release-stable.result == 'skipped')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Pull latest (stable only — picks up release-it version commit)
+        if: needs.prepare.outputs.release-type == 'stable'
+        run: |
+          git config --global --add safe.directory "$(pwd)"
+          git pull origin $(git rev-parse --abbrev-ref HEAD)
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
+
+      - name: Update version and JSR config (canary)
+        if: needs.prepare.outputs.release-type == 'canary'
+        run: |
+          bun .github/scripts/bump-version.ts --version=${{ needs.prepare.outputs.version }} --tag=next --suffix=${{ github.run_number }}
+          bun .github/scripts/jsrSetup.ts
+
+      - name: Update JSR config (stable)
+        if: needs.prepare.outputs.release-type == 'stable'
+        run: |
+          bun .github/scripts/jsrSetup.ts
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        run: bun .github/scripts/build-and-bundle.ts
+
+      - name: Publish to JSR
+        run: |
+          CMD="bunx jsr publish --allow-dirty"
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
+          echo "Running: $CMD"
+          eval "$CMD"
+
+  publish-to-github-packages:
+    name: Publish to GitHub Packages
+    runs-on: ubuntu-latest
+    needs: [prepare, release-stable]
+    permissions:
+      contents: write
+      packages: write
+    if: always() && (needs.release-stable.result == 'success' || needs.release-stable.result == 'skipped')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Pull latest (stable only — picks up release-it version commit)
+        if: needs.prepare.outputs.release-type == 'stable'
+        run: |
+          git config --global --add safe.directory "$(pwd)"
+          git pull origin $(git rev-parse --abbrev-ref HEAD)
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
+
+      - name: Bump canary version
+        if: needs.prepare.outputs.release-type == 'canary'
+        run: |
+          bun .github/scripts/bump-version.ts --version=${{ needs.prepare.outputs.version }} --tag=next --suffix=${{ github.run_number }}
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        run: bun .github/scripts/build-and-bundle.ts
+
+      - name: Publish to GitHub Packages
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          if [[ "${{ needs.prepare.outputs.release-type }}" == "stable" ]]; then
+            CMD="npm publish --registry=https://npm.pkg.github.com/ --access public"
+          else
+            CMD="npm publish --registry=https://npm.pkg.github.com/ --tag next --access public"
+          fi
+          if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+            CMD="$CMD --dry-run"
+          fi
+          echo "Running: $CMD"
+          eval "$CMD"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify-slack:
+    name: Notify Slack
+    needs:
+      - prepare
+      - publish-to-npm
+      - publish-to-jsr
+      - publish-to-github-packages
+    if: always() && inputs.dryRun != true
+    uses: ./.github/workflows/messaging-slack-publishing.yml
+    with:
+      message_header: ${{ needs.prepare.outputs.release-type == 'canary' && '📦 Canary Package Publication Status' || '📦 Stable Package Published' }}
+      version: ${{ needs.prepare.outputs.display-version }}
+      npm_status: ${{ needs.publish-to-npm.result }}
+      jsr_status: ${{ needs.publish-to-jsr.result }}
+      github_pkg_status: ${{ needs.publish-to-github-packages.result }}
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ needs.prepare.outputs.release-type == 'canary' && secrets.SLACK_WEBHOOK_URL_DEPLOYMENTS_CANARY || secrets.SLACK_WEBHOOK_URL_DEPLOYMENTS }}
