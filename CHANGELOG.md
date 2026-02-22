@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.2.0](https://github.com/MainQueueIO/typescript-style/compare/0.1.5...0.2.0) (2026-02-22)
+
+### 🚀 New Features
+
+* **ci:** create badges and separate linter action ([#34](https://github.com/MainQueueIO/typescript-style/issues/34)) ([2e16163](https://github.com/MainQueueIO/typescript-style/commit/2e16163425b5620ecfae89f58a9660c57e5d37b0))
+* **eslint:** add vue & linter configurations for centralized management ([#25](https://github.com/MainQueueIO/typescript-style/issues/25)) ([3602a65](https://github.com/MainQueueIO/typescript-style/commit/3602a65a7fc688fb6d66b6639ef0681cffe2bf00))
+
+### 🐛 Bug Fixes
+
+* **ci:** add frozen-lockfile and production flags ([#32](https://github.com/MainQueueIO/typescript-style/issues/32)) ([1e8c358](https://github.com/MainQueueIO/typescript-style/commit/1e8c358309391729dc05930bd8447eb851d2750d))
+* **deps:** remove redundant parser deps ([#28](https://github.com/MainQueueIO/typescript-style/issues/28)) ([b61806b](https://github.com/MainQueueIO/typescript-style/commit/b61806bb12297d4881663330aa4b10d26edc60b2))
+* **deps:** sync bun lock file ([#31](https://github.com/MainQueueIO/typescript-style/issues/31)) ([11be620](https://github.com/MainQueueIO/typescript-style/commit/11be620e00b6cbf41736182d1d985f94debf070b))
+* **eslint:** add vue parsers for solving templating issues ([#26](https://github.com/MainQueueIO/typescript-style/issues/26)) ([f15f7de](https://github.com/MainQueueIO/typescript-style/commit/f15f7dec0f0d10c9a41947d360ec3a1a83b65a75))
+* **eslint:** rollback react-hooks for zod mismatch ([#30](https://github.com/MainQueueIO/typescript-style/issues/30)) ([23c865e](https://github.com/MainQueueIO/typescript-style/commit/23c865eea81eeaa258019535d2bd66bb03770ebb))
+
+### 📦 Miscellaneous tasks
+
+* **ci:** migrate to OIDC and bump dev deps ([#37](https://github.com/MainQueueIO/typescript-style/issues/37)) ([d5aec76](https://github.com/MainQueueIO/typescript-style/commit/d5aec767847c3853b68fc3c1b7c1d7db8660449f))
+* **deps:** bump bun & underlying dependencies to latest as of December 2025 ([#35](https://github.com/MainQueueIO/typescript-style/issues/35)) ([23863a0](https://github.com/MainQueueIO/typescript-style/commit/23863a0a720ac10d3711d464a836d33440927bf5))
+* **deps:** bump deps to latest as of 24-Nov-2025 ([#33](https://github.com/MainQueueIO/typescript-style/issues/33)) ([7b19e3c](https://github.com/MainQueueIO/typescript-style/commit/7b19e3ccfc01724df80335e2cd7dcc20d19655eb))
+* **deps:** upgrade oxlint, tsgolint and plugins ([#29](https://github.com/MainQueueIO/typescript-style/issues/29)) ([ffa2d62](https://github.com/MainQueueIO/typescript-style/commit/ffa2d6262959f7e9ea9a49e7baa80d1609888345))
+* **oxlint:** bump tsgolint to latest as 17Dec25 ([#36](https://github.com/MainQueueIO/typescript-style/issues/36)) ([0efca96](https://github.com/MainQueueIO/typescript-style/commit/0efca96c682dda17b50f0ae20d8d3aaae398a8db))
+
 ## 0.1.5 (2025-10-29)
 
 ### 📦 Miscellaneous tasks

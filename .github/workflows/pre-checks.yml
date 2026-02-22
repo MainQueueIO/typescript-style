@@ -50,10 +50,11 @@ jobs:
     name: Check for Canary Release on merge
     needs: [check-pullrequest-label, check-pullrequest-title]
     if: github.event.pull_request.draft == false
-    uses: ./.github/workflows/canary.yml
+    uses: ./.github/workflows/publish.yml
     with:
+      releaseType: canary
       dryRun: true
     permissions:
-      contents: read
+      contents: write
       packages: write
       id-token: write
