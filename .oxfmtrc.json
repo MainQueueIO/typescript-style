@@ -7,6 +7,11 @@
   "trailingComma": "all",
   "sortPackageJson": false,
   "ignorePatterns": [
+    ".agents",
+    ".claude",
+    ".codex",
+    ".gemini",
+    ".opencode",
     "node_modules",
     ".github/CODEOWNERS",
     "CHANGELOG.md"
