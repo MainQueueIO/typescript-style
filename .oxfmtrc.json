@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "arrowParens": "always",
+  "bracketSameLine": false,
+  "printWidth": 80,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "node_modules",
+    ".github/CODEOWNERS",
+    "CHANGELOG.md"
+  ]
+}
