@@ -12,8 +12,6 @@
     ".codex",
     ".gemini",
     ".opencode",
-    "node_modules",
-    ".github/CODEOWNERS",
-    "CHANGELOG.md"
+    "node_modules"
   ]
 }
