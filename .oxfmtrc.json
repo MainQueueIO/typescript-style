@@ -5,13 +5,20 @@
   "printWidth": 80,
   "singleQuote": true,
   "trailingComma": "all",
-  "sortPackageJson": false,
+  "sortPackageJson": {
+    "sortScripts": true
+  },
+  "jsdoc": {
+    "commentLineStrategy": "multiline",
+    "separateTagGroups": true
+  },
   "ignorePatterns": [
     ".agents",
     ".claude",
     ".codex",
     ".gemini",
     ".opencode",
-    "node_modules"
+    "node_modules",
+    "**/animations/**"
   ]
 }
