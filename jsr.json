@@ -16,6 +16,7 @@
       "./eslint-vue.config.mjs",
       "./prettier.config.mjs",
       "./oxlint-base.json",
+      "./.oxfmtrc.json",
       "./index.ts",
       "README.md"
     ]
@@ -25,6 +26,7 @@
     "./eslint-vue": "./eslint-vue.config.mjs",
     "./prettier": "./prettier.config.mjs",
     "./oxlint": "./oxlint-base.json",
+    "./oxfmt": "./.oxfmtrc.json",
     ".": "./index.ts"
   }
 }

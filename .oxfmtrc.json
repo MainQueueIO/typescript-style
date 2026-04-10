@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "arrowParens": "always",
+  "bracketSameLine": false,
+  "printWidth": 80,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "sortPackageJson": {
+    "sortScripts": true
+  },
+  "jsdoc": {
+    "commentLineStrategy": "multiline",
+    "separateTagGroups": true
+  },
+  "ignorePatterns": [
+    ".agents",
+    ".claude",
+    ".codex",
+    ".gemini",
+    ".opencode",
+    "node_modules",
+    "**/animations/**"
+  ]
+}

@@ -29,6 +29,7 @@
   "include": [
     "index.ts",
     "oxlint-base.json",
+    ".oxfmtrc.json",
     "prettier.config.mjs",
     "eslint.config.mjs",
     "eslint-vue.config.mjs"
