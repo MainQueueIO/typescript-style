@@ -8,23 +8,35 @@ Shared configurations for Eslint, Prettier & Oxlint for all TS ecosystem code st
 
 This package ships the **configuration content** (eslint flat config, prettier
 config, oxlint & oxfmt base configs) via its exports. The linters themselves
-(`eslint`, `prettier`, `oxlint`, `oxfmt`, `typescript`) are declared as
-**`peerDependencies`** — each consuming project installs them directly. This is
-the standard shared-config model and the only one that works reliably in
-monorepos using an isolated/strict linker (bun `--linker isolated`, pnpm), where
-transitive dependencies are **not** hoisted and so can't be run or imported from a
-package that doesn't declare them.
+(`eslint`, `prettier`, `oxlint`, `oxfmt`) are declared **both** as bundled
+`dependencies` and as `peerDependencies`, pinned to the same versions — so both
+repo layouts work:
+
+- **Single-package repos** (default hoisted linker) get the tools transitively;
+  installing this package is enough — no need to install the linters separately.
+- **Monorepos** using an isolated/strict linker (bun `--linker isolated`, pnpm)
+  do **not** hoist transitive dependencies, so each package must install the tools
+  itself. `mqio-lint-doctor` enforces that they match the pinned versions.
+
+`typescript` is a peer only (range, optional) since every project brings its own.
 
 ## Install
 
-In **every** package that lints (in a monorepo, per package — not just the root):
+**Single-package repo** — installing the config is enough; the linters come bundled:
+
+```sh
+bun add -d @mainqueueio/eslint-config
+```
+
+**Monorepo (isolated linker)** — install the linters in **every** package that
+lints (per package, not just the root) so they resolve locally:
 
 ```sh
 bun add -d @mainqueueio/eslint-config eslint prettier oxlint oxfmt typescript
 ```
 
-The exact versions are pinned in this package's `peerDependencies`; keep them in
-sync (see [Version consistency](#version-consistency)).
+The versions are pinned in this package's `peerDependencies`; `mqio-lint-doctor`
+keeps consumers in sync (see [Version consistency](#version-consistency)).
 
 ## Wire up the configs
 
