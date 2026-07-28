@@ -12,7 +12,6 @@
   "publish": {
     "include": [
       "./dist",
-      "./bin",
       "./eslint.config.mjs",
       "./eslint-vue.config.mjs",
       "./prettier.config.mjs",

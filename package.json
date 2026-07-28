@@ -3,13 +3,8 @@
     "version": "0.2.0",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "bin": {
-        "oxlint": "./bin/oxlint.mjs",
-        "oxfmt": "./bin/oxfmt.mjs"
-    },
     "files": [
-        "dist",
-        "bin"
+        "dist"
     ],
     "exports": {
         "./eslint": "./dist/eslint.config.mjs",

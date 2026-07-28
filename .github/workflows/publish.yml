@@ -144,12 +144,8 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      # Trusted Publishing (OIDC) needs npm >= 11.5.1. Pin to npm@11 rather than
-      # npm@latest: npm@12 requires Node >= 22.22.2, which outpaces the Node
-      # version in .nvmrc and breaks CI. npm@11 stays compatible while keeping
-      # OIDC support. Bump this alongside .nvmrc when moving to npm@12+.
       - name: Upgrade npm (required for OIDC Trusted Publishing)
-        run: npm install -g npm@11
+        run: npm install -g npm@latest
 
       - name: Bump canary version
         if: needs.prepare.outputs.release-type == 'canary'
