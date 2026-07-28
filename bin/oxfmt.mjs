@@ -8,13 +8,15 @@
 // package manager hoists transitive binaries.
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const pkgPath = require.resolve('oxfmt/package.json');
 const { bin } = require(pkgPath);
+// pathToFileURL (not `file://${pkgPath}`) so paths containing URL-significant
+// characters like %, #, or ? are encoded rather than truncated/rejected.
 const realBin = fileURLToPath(
-  new URL(typeof bin === 'string' ? bin : bin.oxfmt, `file://${pkgPath}`),
+  new URL(typeof bin === 'string' ? bin : bin.oxfmt, pathToFileURL(pkgPath)),
 );
 
 const argv = process.argv.slice(2);
