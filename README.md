@@ -4,36 +4,100 @@
 
 Shared configurations for Eslint, Prettier & Oxlint for all TS ecosystem code styles for MainQueue
 
-## Monorepo usage (turborepo / bun workspaces)
+## What this package provides
 
-This package ships `oxlint` and `oxfmt` as its own executables. They resolve the
-bundled binaries from the config package itself and default to the shared config,
-so you don't need to install or configure `oxlint`/`oxfmt` separately.
+This package ships the **configuration content** (eslint flat config, prettier
+config, oxlint & oxfmt base configs) via its exports. The linters themselves
+(`eslint`, `prettier`, `oxlint`, `oxfmt`) are declared **both** as bundled
+`dependencies` and as `peerDependencies`, pinned to the same versions — so both
+repo layouts work:
 
-Because Node only links a package's `bin` entries into the `node_modules/.bin` of
-its **direct** dependents, install this package in **each package that lints** —
-not only at the workspace root:
+- **Single-package repos** (default hoisted linker) get the tools transitively;
+  installing this package is enough — no need to install the linters separately.
+- **Monorepos** using an isolated/strict linker (bun `--linker isolated`, pnpm)
+  do **not** hoist transitive dependencies, so each package must install the tools
+  itself. `mqio-lint-doctor` enforces that they match the pinned versions.
 
-```jsonc
-// packages/<name>/package.json
-{
-  "devDependencies": {
-    "@mainqueueio/eslint-config": "^0.2.0"
-  }
-}
+`typescript` is a peer only (range, optional) since every project brings its own.
+
+## Install
+
+**Single-package repo** — installing the config is enough; the linters come bundled:
+
+```sh
+bun add -d @mainqueueio/eslint-config
 ```
 
-Then the commands are available inside that package (Turbo runs scripts from the
-package directory), using the bundled config automatically:
+**Monorepo (isolated linker)** — install the linters in **every** package that
+lints (per package, not just the root) so they resolve locally:
+
+```sh
+bun add -d @mainqueueio/eslint-config eslint prettier oxlint oxfmt typescript
+```
+
+The versions are pinned in this package's `peerDependencies`; `mqio-lint-doctor`
+keeps consumers in sync (see [Version consistency](#version-consistency)).
+
+## Wire up the configs
+
+```js
+// eslint.config.mjs        (or '@mainqueueio/eslint-config/eslint-vue')
+export { default } from '@mainqueueio/eslint-config/eslint';
+```
+
+```js
+// prettier.config.mjs
+export { default } from '@mainqueueio/eslint-config/prettier';
+```
+
+```jsonc
+// .oxlintrc.json — oxlint's `extends` needs a file PATH (a package specifier is
+// silently ignored). The node_modules path resolves via the top-level symlink,
+// even under an isolated linker.
+{ "extends": ["./node_modules/@mainqueueio/eslint-config/dist/oxlint-base.json"] }
+```
+
+```ts
+// oxfmt.config.ts — oxfmt has no `extends`, so import the base and spread it.
+// oxfmt auto-discovers `oxfmt.config.ts` (the `.ts` extension specifically).
+import base from '@mainqueueio/eslint-config/oxfmt' with { type: 'json' };
+
+export default { ...base /* , overrides here */ };
+```
+
+Suggested scripts (run in parallel with your tool of choice):
 
 ```jsonc
 {
   "scripts": {
+    "lint:oxc": "oxlint",
     "lint:fmt": "oxfmt --check",
-    "lint:oxc": "oxlint --deny-warnings"
+    "lint:es": "eslint .",
+    "lint:format": "prettier -c .",
+    "lint:versions": "mqio-lint-doctor"
   }
 }
 ```
 
-Pass `-c` / `--config` to override the bundled config; otherwise the shared
-`oxlint-base.json` / `.oxfmtrc.json` is applied.
+> Type-aware oxlint (`--type-aware` / `--tsconfig`) additionally needs
+> `oxlint-tsgolint` installed directly in the package.
+
+## Version consistency
+
+`mqio-lint-doctor` (shipped by this package) reads this package's
+`peerDependencies` and checks the versions installed in the current package,
+exiting non-zero on any mismatch or missing tool. Run it in CI to hard-fail on
+drift so every repo stays on the same linters:
+
+```sh
+mqio-lint-doctor
+```
+
+```
+mqio-lint-doctor — checking lint tool versions against @mainqueueio/eslint-config@x.y.z
+
+  ✓ eslint       9.39.4 (matches 9.39.4)
+  ✓ oxfmt        0.45.0 (matches 0.45.0)
+  ✗ oxlint       MISMATCH installed 1.59.0, expected 1.60.0
+  ...
+```
