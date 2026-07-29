@@ -149,7 +149,7 @@ jobs:
       # version in .nvmrc and breaks CI. npm@11 stays compatible while keeping
       # OIDC support. Bump this alongside .nvmrc when moving to npm@12+.
       - name: Upgrade npm (required for OIDC Trusted Publishing)
-        run: npm install -g npm@11
+        run: npm install -g npm@latest
 
       - name: Bump canary version
         if: needs.prepare.outputs.release-type == 'canary'
