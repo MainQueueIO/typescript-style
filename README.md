@@ -8,9 +8,9 @@ Shared configurations for Eslint, Prettier & Oxlint for all TS ecosystem code st
 
 This package ships the **configuration content** (eslint flat config, prettier
 config, oxlint & oxfmt base configs) via its exports. The linters themselves
-(`eslint`, `prettier`, `oxlint`, `oxfmt`) are declared **both** as bundled
-`dependencies` and as `peerDependencies`, pinned to the same versions — so both
-repo layouts work:
+(`eslint`, `prettier`, `oxlint`, `oxfmt`) plus `concurrently` (used to run lint
+scripts in parallel) are declared **both** as bundled `dependencies` and as
+`peerDependencies`, pinned to the same versions — so both repo layouts work:
 
 - **Single-package repos** (default hoisted linker) get the tools transitively;
   installing this package is enough — no need to install the linters separately.
@@ -32,7 +32,7 @@ bun add -d @mainqueueio/eslint-config
 lints (per package, not just the root) so they resolve locally:
 
 ```sh
-bun add -d @mainqueueio/eslint-config eslint prettier oxlint oxfmt typescript
+bun add -d @mainqueueio/eslint-config eslint prettier oxlint oxfmt concurrently typescript
 ```
 
 The versions are pinned in this package's `peerDependencies`; `mqio-lint-doctor`
@@ -96,6 +96,7 @@ mqio-lint-doctor
 ```
 mqio-lint-doctor — checking lint tool versions against @mainqueueio/eslint-config@x.y.z
 
+  ✓ concurrently 9.2.1 (matches 9.2.1)
   ✓ eslint       9.39.4 (matches 9.39.4)
   ✓ oxfmt        0.45.0 (matches 0.45.0)
   ✗ oxlint       MISMATCH installed 1.59.0, expected 1.60.0
